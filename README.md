@@ -33,7 +33,15 @@ The figure shows the general steps of the examples.
 
 The examples show how easy it is to add, call, and remove an item to the event. 
 
+- `event_lf_memory_t`/`EventLfMemory` provides a fixed-capacity storage buffer for event handlers.
+- `event_lf_t`/`EventLf` uses this memory to manage a list of subscribed handlers.
+  - Handlers are added using add and removed using sub in C/C++.
+  - Handlers are added using `+=` and removed using `-=` in C++.
+- `Invoke()` triggers all currently registered handlers in the order they were added.
+
 ### Example C
+
+This example demonstrates how to use `event_lf_t`, a event/listener system designed for fixed-size, preallocated memory usage.
 
 ```c
 void event_lf_example1(void)
@@ -44,7 +52,6 @@ void event_lf_example1(void)
   event_lf_memory.Add(&memory, data10, countof(data10));
 
   event_lf_t e1 = EVENT_LF_INIT(&memory);
-  event_lf.Init(&e1, &memory);
   event_lf.Add(&e1, NULL); // Optional adds a trailing item
 
   event_lf.Add(&e1, handler1);
@@ -61,21 +68,23 @@ void event_lf_example1(void)
 
 ### Example C++
 
+This example demonstrates how to use EventLf, a event system that stores and invokes function handlers using a fixed-size memory buffer.
+
 ```cpp
 void EventLf_example1(void)
 {
   std::array<event_lf_item_t, 10> data10;
 
   auto memory = EventLfMemory(data10);
-
+  
   auto e1 = EventLf(memory);
 
-  e1.Add(handler1);
-  e1.Add(handler2);
-  e1.Add(handler3);
+  e1 += handler1;
+  e1 += handler2;
+  e1 += handler3;
   e1.Invoke(NULL, NULL); // 1, 2, 3
 
-  e1.Sub(handler2);
+  e1 -= handler2;
   e1.Invoke(NULL, NULL); // 1, 3
 }
 ```

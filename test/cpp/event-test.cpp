@@ -92,12 +92,12 @@ void EventLf_example1(void)
   auto memory = EventLfMemory(data10);
   auto e1 = EventLf(memory);
 
-  e1.Add(handler1);
-  e1.Add(handler2);
-  e1.Add(handler3);
+  e1 += handler1;
+  e1 += handler2;
+  e1 += handler3;
   e1.Invoke(NULL, NULL); // 1, 2, 3
 
-  e1.Sub(handler2);
+  e1 -= handler2;
   e1.Invoke(NULL, NULL); // 1, 3
 }
 
@@ -147,6 +147,34 @@ void EventLf_example3(void)
 
 #endif
 
+void EventLf_example4(void)
+{
+  std::array<event_lf_item_t, 4> data4;
+
+  auto memory = EventLfMemory();
+  memory += data4;
+
+  auto e1 = EventLf(memory);
+  e1 += handler1;
+  e1 += handler2;
+  e1 += handler3;
+  e1.Invoke(NULL, NULL); // 1, 2, 3
+
+  e1 -= handler2;
+  e1 += handler2;
+  e1.Invoke(NULL, NULL); // 1, 3, 2
+
+  try
+  {
+    e1 += handler1;
+  }
+  catch (const std::exception& e)
+  {
+    std::string message = e.what();
+    std::cout << message << std::endl;
+  }
+}
+
 
 int event_lf_test(void)
 {
@@ -157,6 +185,9 @@ int event_lf_test(void)
 #ifdef EVENT_LF_ALLOW_STANDARD_MALLOC_FREE
   EventLf_example3();
 #endif
+
+  std::cout << "EventLf_example4" << std::endl;
+  EventLf_example4();
 
   return 0;
 }

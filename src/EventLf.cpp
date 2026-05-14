@@ -87,6 +87,12 @@ void EventLfMemory::Add (std::span<event_lf_item_t> data)
   event_lf_memory_add(c_object, data.data(), data.size());
 }
 
+EventLfMemory& EventLfMemory::operator+= (std::span<event_lf_item_t> data)
+{
+  Add(data);
+  return *this;
+}
+
 event_lf_item_t * EventLfMemory::Allocate ()
 {
   return event_lf_memory_allocate(c_object);
@@ -161,6 +167,17 @@ bool EventLf::Add (function_pointer const function)
   return event_lf_add(c_object, function);
 }
 
+EventLf& EventLf::operator+= (function_pointer const function)
+{
+  bool worked = event_lf_add(c_object, function);
+  if (worked)
+  {
+    return *this;
+  }
+
+  throw std::runtime_error("Not enough memory");
+}
+
 uint16_t EventLf::Count ()
 {
   return event_lf_count(c_object);
@@ -184,6 +201,12 @@ void EventLf::Invoke (void * const sender, void * const e)
 void EventLf::Sub (function_pointer const function)
 {
   event_lf_sub(c_object, function);
+}
+
+EventLf& EventLf::operator-= (function_pointer const function)
+{
+  event_lf_sub(c_object, function);
+  return *this;
 }
 
 

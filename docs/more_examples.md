@@ -77,3 +77,33 @@ void EventLf_example2(void)
   event_lf.Dispose(&e2);
 }
 ```
+
+```cpp
+void EventLf_example4(void)
+{
+  std::array<event_lf_item_t, 4> data4;
+
+  auto memory = EventLfMemory();
+  memory += data4;
+
+  auto e1 = EventLf(memory);
+  e1 += handler1;
+  e1 += handler2;
+  e1 += handler3;
+  e1.Invoke(NULL, NULL); // 1, 2, 3
+
+  e1 -= handler2;
+  e1 += handler2;
+  e1.Invoke(NULL, NULL); // 1, 3, 2
+
+  try
+  {
+    e1 += handler1;
+  }
+  catch (const std::exception& e)
+  {
+    std::string message = e.what();
+    std::cout << message << std::endl;
+  }
+}
+```
