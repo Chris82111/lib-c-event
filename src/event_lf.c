@@ -13,27 +13,35 @@
 //  private: definitions
 // ------------------------------------------------------------------------- //
 
-/// @def INLINE
-/// @brief A way for INLINE to use other commands
-/// @details Checks whether ::INLINE is already defined; if not, the
-///          C/C++ `inline` keyword is used.
+//! @def INLINE
+//! @brief A way for INLINE to use other commands
+//! @details Checks whether ::INLINE is already defined; if not, the
+//!          C/C++ `inline` keyword is used.
 #ifndef INLINE
 #define INLINE inline
 #endif
 
-/// @def UNUSED
-/// @brief A way for UNUSED to use other commands
-/// @details Marks a variable, parameter, or function as intentionally unused.
-///          On GCC- and Clang-compatible compilers, this expands to the
-///          `__attribute__((unused))` attribute to suppress compiler warnings
-///          about unused entities.
-///
-#ifndef UNUSED
+//! @def UNUSED_ATTR
+//! @brief This attribute prevents warnings related to functions or function parameters
+//! @details Marks a variable, parameter, or function as intentionally unused.
+//!          On GCC- and Clang-compatible compilers, this expands to the
+//!          `__attribute__((unused))` attribute to suppress compiler warnings
+//!          about unused entities.
+//!
+#ifndef UNUSED_ATTR
   #if defined(__GNUC__) || defined(__clang__)
-    #define UNUSED __attribute__((unused))
+    #define UNUSED_ATTR __attribute__((unused))
   #else
-    #define UNUSED
+    #define UNUSED_ATTR
   #endif
+#endif
+
+//! @def UNUSED
+//! @brief This prevents warnings related to variables
+//! @details Marks a variable to suppress compiler warnings about unused variables.
+//!
+#ifndef UNUSED
+#define UNUSED(x) (void)(x)
 #endif
 
 
@@ -41,23 +49,23 @@
 //  private: macros like functions
 // ------------------------------------------------------------------------- //
 
-/// @brief Estimate whether the type is lock-free, based on its size
-///
-/// @details This macro maps only the size of a given type `T` to the
-///          corresponding `ATOMIC_*_LOCK_FREE` macro defined in
-///          `<stdatomic.h>`. It provides a compile-time estimation of
-///          whether atomic operations on objects of that size are
-///          lock-free on the target platform.
-///
-///          For precise, runtime determination, use `atomic_is_lock_free()`.
-///
-/// @param T The type to check for lock-free atomic support
-///
-/// @return An integer constant indicating the lock-free property 
-/// @retval 0 Never lock-free or no matching fundamental type exists
-/// @retval 1 Sometimes lock-free
-/// @retval 2 Always lock-free
-///
+//! @brief Estimate whether the type is lock-free, based on its size
+//!
+//! @details This macro maps only the size of a given type `T` to the
+//!          corresponding `ATOMIC_*_LOCK_FREE` macro defined in
+//!          `<stdatomic.h>`. It provides a compile-time estimation of
+//!          whether atomic operations on objects of that size are
+//!          lock-free on the target platform.
+//!
+//!          For precise, runtime determination, use `atomic_is_lock_free()`.
+//!
+//! @param T The type to check for lock-free atomic support
+//!
+//! @return An integer constant indicating the lock-free property
+//! @retval 0 Never lock-free or no matching fundamental type exists
+//! @retval 1 Sometimes lock-free
+//! @retval 2 Always lock-free
+//!
 #define ATOMIC_LOCK_FREE_BY_SIZE(T) \
 (                                                           \
   sizeof(T) == sizeof(char)      ? ATOMIC_CHAR_LOCK_FREE  : \
@@ -68,15 +76,15 @@
   0                                                         \
 )                                                          // ;
 
-/// @brief Estimate at compile-time that a type is always lock-free for atomic operations
-///
-/// @details If the type is not always lock-free, compilation will fail with
-///          an error message indicating the offending type.
-///
-///          To perform a runtime test use `check_lock_free_runtime()`
-///
-/// @param T The type to check for lock-free atomic support.
-///
+//! @brief Estimate at compile-time that a type is always lock-free for atomic operations
+//!
+//! @details If the type is not always lock-free, compilation will fail with
+//!          an error message indicating the offending type.
+//!
+//!          To perform a runtime test use `check_lock_free_runtime()`
+//!
+//! @param T The type to check for lock-free atomic support.
+//!
 #define CHECK_LOCK_FREE_COMPILE_TIME(T) \
   _Static_assert(                                  \
     ATOMIC_LOCK_FREE_BY_SIZE(T) == 2,              \
@@ -84,7 +92,7 @@
   )                                               // ;
 
 
-/// @cond INTERNAL
+//! @cond INTERNAL
 
 CHECK_LOCK_FREE_COMPILE_TIME(event_lf_item_t *);
 
@@ -96,7 +104,7 @@ CHECK_LOCK_FREE_COMPILE_TIME(uint16_t);
 #error "Atomic pointer is not always lock-free; signal handler may deadlock."
 #endif
 
-/// @endcond
+//! @endcond
 
 
 // ------------------------------------------------------------------------- //
@@ -134,20 +142,20 @@ const struct event_lf_sc event_lf =
 //  private: function prototypes
 // ------------------------------------------------------------------------- //
 
-/// @brief Try moving items from `list` to `remove`
-///
-/// The function must be called in such a way that only one instance
-/// is active at a time
-///
-/// @param[in] object The event object itself, must not be null
+//! @brief Try moving items from `list` to `remove`
+//!
+//! The function must be called in such a way that only one instance
+//! is active at a time
+//!
+//! @param[in] object The event object itself, must not be null
 static void event_lf_sort_remove(event_lf_t * object);
 
-/// @brief Tries to remove items from the list `remove`
-///
-/// The function must be called in such a way that only one instance
-/// is active at a time
-///
-/// @param[in] object The event object itself, must not be null
+//! @brief Tries to remove items from the list `remove`
+//!
+//! The function must be called in such a way that only one instance
+//! is active at a time
+//!
+//! @param[in] object The event object itself, must not be null
 static void event_lf_sort_free(event_lf_t * object);
 
 
@@ -155,72 +163,72 @@ static void event_lf_sort_free(event_lf_t * object);
 //  private: inline functions
 // ------------------------------------------------------------------------- //
 
-/// @brief Check if specific flags are set in a value.
-/// 
-/// @details This function verifies whether all bits specified in the @p flags
-///          parameter are set in the given @p value.
-/// 
-/// @param value The value to be checked.
-/// @param flags The bitmask representing the flags to test.
-/// @return Checks if the bits are set
-/// @retval true If all bits in @p flags are set in @p value.
-/// @retval false Otherwise.
+//! @brief Check if specific flags are set in a value.
+//!
+//! @details This function verifies whether all bits specified in the @p flags
+//!          parameter are set in the given @p value.
+//!
+//! @param value The value to be checked.
+//! @param flags The bitmask representing the flags to test.
+//! @return Checks if the bits are set
+//! @retval true If all bits in @p flags are set in @p value.
+//! @retval false Otherwise.
 static INLINE bool IS_FLAG_SET(uint16_t value, uint16_t flags)
 {
   return (flags & value) == flags;
 }
 
-/// @brief Checks whether specific masked bits in a value match given flags.
-/// 
-/// @details This function applies a bitmask to the input value and compares
-///          the result against the expected flags.
-/// 
-/// @param value The input value whose bits will be tested.
-/// @param mask  The bitmask used to select relevant bits from @p value .
-/// @param flags The expected bit pattern after masking.
-/// 
-/// @return If the masked bits are equal to the given flags
-/// @retval true If ( @p value & @p mask ) equals @p flags
-/// @retval false Otherwise.
-static INLINE UNUSED bool IS_MASKED_BITS_EQUAL(uint16_t value, uint16_t mask, uint16_t flags)
+//! @brief Checks whether specific masked bits in a value match given flags.
+//!
+//! @details This function applies a bitmask to the input value and compares
+//!          the result against the expected flags.
+//!
+//! @param value The input value whose bits will be tested.
+//! @param mask  The bitmask used to select relevant bits from @p value .
+//! @param flags The expected bit pattern after masking.
+//!
+//! @return If the masked bits are equal to the given flags
+//! @retval true If ( @p value & @p mask ) equals @p flags
+//! @retval false Otherwise.
+static INLINE UNUSED_ATTR bool IS_MASKED_BITS_EQUAL(uint16_t value, uint16_t mask, uint16_t flags)
 {
   return (mask & value) == flags;
 }
 
-/// @brief Check if specific flags are clear in a value.
-/// 
-/// @details This function verifies whether all bits specified in the @p flags
-///          parameter are cleared in the given @p value.
-/// 
-/// @param value The value to be checked.
-/// @param flags The bitmask representing the flags to test.
-/// @return Checks if the bits are cleared
-/// @retval true  If none of the bits in @p flags are set in @p value.
-/// @retval false If any bit in @p flags is set in @p value.
+//! @brief Check if specific flags are clear in a value.
+//!
+//! @details This function verifies whether all bits specified in the @p flags
+//!          parameter are cleared in the given @p value.
+//!
+//! @param value The value to be checked.
+//! @param flags The bitmask representing the flags to test.
+//! @return Checks if the bits are cleared
+//! @retval true  If none of the bits in @p flags are set in @p value.
+//! @retval false If any bit in @p flags is set in @p value.
 static INLINE bool IS_FLAG_CLEAR(uint16_t value, uint16_t flags)
 {
   return 0 == (flags & value);
 }
 
-/// @brief Checks whether another thread was running at the time of the check
-/// @param[in] object The event object itself, must not be null
-/// @return Returns whether another thread is running
-/// @retval true  if another thread has run or is still running
-/// @retval false if another thread wasn't running or still isn't running
+//! @brief Checks whether another thread was running at the time of the check
+//! @param[in] object The event object itself, must not be null
+//! @return Returns whether another thread is running
+//! @retval true  if another thread has run or is still running
+//! @retval false if another thread wasn't running or still isn't running
 static INLINE bool EVENT_LF_IS_ANOTHER_THREAD_RUNNING(const event_lf_t * const object)
 {
     return 1 < atomic_load(&object->threads);
 }
 
-/// @brief Marks the object as in use, for concurrent environments
-/// @param[in,out] object The event object itself, must not be null
+//! @brief Marks the object as in use, for concurrent environments
+//! @param[in,out] object The event object itself, must not be null
 static INLINE void EVENT_LF_OBJECT_USE_BEGIN(event_lf_t * const object)
 {
     atomic_fetch_add(&object->threads, 1);
 }
 
-/// @brief Ends the current use of the object, for concurrent environments
-/// @param[in,out] object The event object itself, must not be null
+//! @brief Ends the current use of the object, for concurrent environments
+//! @param[in,out] object The event object itself, must not be null
 
 static INLINE void EVENT_LF_OBJECT_USE_END(event_lf_t * const object)
 {
@@ -409,6 +417,27 @@ void event_lf_memory_init(event_lf_memory_t * object)
   atomic_store(&object->used, 0);
   atomic_store(&object->capacity, 0);
 }
+
+
+
+#ifdef EVENT_LF_ALLOW_STANDARD_MALLOC_FREE
+
+
+event_lf_item_t * event_lf_standard_malloc(void * object)
+{
+  UNUSED(object);
+  return malloc(sizeof(event_lf_item_t));
+}
+
+void event_lf_standard_free(void * object, event_lf_item_t * item)
+{
+  UNUSED(object);
+  free(item);
+}
+
+
+#endif
+
 
 
 bool event_lf_add(event_lf_t * const object, function_pointer const function)

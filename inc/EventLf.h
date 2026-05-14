@@ -122,6 +122,15 @@ private:
   //! @param[in] memory_object The memory object for managing memory
   void Init (event_lf_memory_t * const memory_object);
 
+  //! @brief Initialize the struct `event_lf_s` with a given memory object and allocate and free functions
+  //! @param[in] memory_object The memory object for managing memory, if not used it can be null
+  //! @param[in] allocate The callback function to allocate memory
+  //! @param[in] free The callback function to free memory
+  void InitCustomMemory (
+    void * const memory_object,
+    event_lf_item_t * (* allocate)(void * memory_object),
+    void (* free)(void * memory_object, event_lf_item_t * mem));
+
 
 public:
   //! @brief A pointer to the `event_lf_t` memory object, so it can be used with C functions
@@ -134,6 +143,22 @@ public:
   //! @brief Initializes the class with the given memory class
   //! @param memory_class The memory object for managing memory
   EventLf (EventLfMemory & memory_class);
+
+  //! @brief A class with the given memory class
+  //! @param[in] memory_object The memory object for managing memory
+  //! @param[in] allocate The callback function to allocate memory
+  //! @param[in] free The callback function to free memory
+  EventLf (event_lf_memory_t * const memory_object,
+           event_lf_item_t * (* allocate)(void * memory_object),
+           void (* free)(void * memory_object, event_lf_item_t * mem));
+
+#ifdef EVENT_LF_ALLOW_STANDARD_MALLOC_FREE
+
+  //! @brief Initialize the class and uses the standard malloc and free function
+  EventLf ();
+
+#endif
+
 
   //! @brief Dispose all items of the event
   ~EventLf ();
@@ -159,15 +184,6 @@ public:
   //! @param[in,out] sender Usually a pointer provided by the sender, but it can be chosen freely
   //! @param function The function that is called
   void Foreach (void * sender, void (*function)(void * sender, event_lf_item_t * item) );
-
-  //! @brief Initialize the struct `event_lf_s` with a given memory object and allocate and free functions
-  //! @param[in] memory_object The memory object for managing memory, if not used it can be null
-  //! @param[in] allocate The callback function to allocate memory
-  //! @param[in] free The callback function to free memory
-  void InitCustomMemory (
-    void * const memory_object,
-    event_lf_item_t * (* allocate)(void * memory_object),
-    void (* free)(void * memory_object, event_lf_item_t * mem));
 
   //! @brief The function can be used to call all functions registered for the event
   //! @param[in,out] sender Usually a pointer provided by the sender, but it can be chosen freely

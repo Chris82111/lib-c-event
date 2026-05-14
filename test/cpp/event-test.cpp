@@ -132,11 +132,31 @@ void EventLf_example2(void)
   event_lf.Dispose(&e2);
 }
 
+#ifdef EVENT_LF_ALLOW_STANDARD_MALLOC_FREE
+
+void EventLf_example3(void)
+{
+  auto a = EventLf();
+
+  a.Add(handler1);
+  a.Add(handler2);
+  a.Add(handler3);
+  a.Invoke(NULL, NULL); // 1, 2, 3
+  a.Dispose();
+}
+
+#endif
+
+
 int event_lf_test(void)
 {
+
   event_lf_example();
   EventLf_example1();
   EventLf_example2();
+#ifdef EVENT_LF_ALLOW_STANDARD_MALLOC_FREE
+  EventLf_example3();
+#endif
 
   return 0;
 }

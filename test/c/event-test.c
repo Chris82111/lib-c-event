@@ -23,6 +23,14 @@
 #define UNUSED(x) (void)(x)
 
 
+#ifndef UNUSED_ATTR
+  #if defined(__GNUC__) || defined(__clang__)
+    #define UNUSED_ATTR __attribute__((unused))
+  #else
+    #define UNUSED_ATTR
+  #endif
+#endif
+
 /*---------------------------------------------------------------------*
  *  private: macros like functions                                     *
  *---------------------------------------------------------------------*/
@@ -933,7 +941,30 @@ int event_lf_thread_test() {
     return errors0 + errors1 + errors2 + errors3;
 }
 
+
+
+#ifdef EVENT_LF_ALLOW_STANDARD_MALLOC_FREE
+
+int event_lf_standard_malloc_free_test(void)
+{
+  uint16_t errors = 0;
+
+  event_lf_t e = EVENT_LF_INIT_STANDARD_MALLOC_FREE();
+
+  event_lf_add(&e, handler1);
+  event_lf_add(&e, handler2);
+  event_lf_add(&e, handler3);
+  event_lf_invoke(&e, NULL, NULL);
+
+  errors += check_out("123");
+
+  return errors;
+}
+
 #endif
+
+#endif
+
 
 void event_lf_example1(void)
 {
@@ -1015,6 +1046,10 @@ int event_lf_test(void)
   errors += event_lf_invoke_test();
   errors += event_lf_sub_test();
   errors += event_lf_thread_test();
+
+#ifdef EVENT_LF_ALLOW_STANDARD_MALLOC_FREE
+  errors += event_lf_standard_malloc_free_test();
+#endif
 
   errors += check_lock_free_runtime() ? 0 : 1;
 
