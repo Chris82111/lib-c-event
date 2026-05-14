@@ -21,19 +21,27 @@
 #define INLINE inline
 #endif
 
-/// @def UNUSED
-/// @brief A way for UNUSED to use other commands
+/// @def UNUSED_ATTR
+/// @brief This attribute prevents warnings related to functions or function parameters
 /// @details Marks a variable, parameter, or function as intentionally unused.
 ///          On GCC- and Clang-compatible compilers, this expands to the
 ///          `__attribute__((unused))` attribute to suppress compiler warnings
 ///          about unused entities.
 ///
-#ifndef UNUSED
+#ifndef UNUSED_ATTR
   #if defined(__GNUC__) || defined(__clang__)
-    #define UNUSED __attribute__((unused))
+    #define UNUSED_ATTR __attribute__((unused))
   #else
-    #define UNUSED
+    #define UNUSED_ATTR
   #endif
+#endif
+
+/// @def UNUSED
+/// @brief This prevents warnings related to variables
+/// @details Marks a variable to suppress compiler warnings about unused variables.
+///
+#ifndef UNUSED
+#define UNUSED(x) (void)(x)
 #endif
 
 
@@ -182,7 +190,7 @@ static INLINE bool IS_FLAG_SET(uint16_t value, uint16_t flags)
 /// @return If the masked bits are equal to the given flags
 /// @retval true If ( @p value & @p mask ) equals @p flags
 /// @retval false Otherwise.
-static INLINE UNUSED bool IS_MASKED_BITS_EQUAL(uint16_t value, uint16_t mask, uint16_t flags)
+static INLINE UNUSED_ATTR bool IS_MASKED_BITS_EQUAL(uint16_t value, uint16_t mask, uint16_t flags)
 {
   return (mask & value) == flags;
 }
@@ -409,6 +417,27 @@ void event_lf_memory_init(event_lf_memory_t * object)
   atomic_store(&object->used, 0);
   atomic_store(&object->capacity, 0);
 }
+
+
+
+#ifdef EVENT_LF_STANDARD_MALLOC_FREE
+
+
+event_lf_item_t * event_lf_standard_malloc(void * object)
+{
+  UNUSED(object);
+  return malloc(sizeof(event_lf_item_t));
+}
+
+void event_lf_standard_free(void * object, event_lf_item_t * item)
+{
+  UNUSED(object);
+  free(item);
+}
+
+
+#endif
+
 
 
 bool event_lf_add(event_lf_t * const object, function_pointer const function)

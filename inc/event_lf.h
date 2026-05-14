@@ -324,6 +324,24 @@ void event_lf_memory_free(event_lf_memory_t * object, event_lf_item_t * item);
 void event_lf_memory_init(event_lf_memory_t * object);
 
 
+
+#ifdef EVENT_LF_STANDARD_MALLOC_FREE
+
+//! @brief Function to allocate an item
+//! @param[in,out] object Not used
+//! @return A pointer to an available event item, or null if there are no more available objects
+event_lf_item_t * event_lf_standard_malloc(void * object);
+
+//! @brief Function to free an item allocated with `malloc`.
+//! @param[in,out] object Not used
+//! @param item The element to be freed
+void event_lf_standard_free(void * object, event_lf_item_t * item);
+
+
+#endif
+
+
+
 //! @brief This function allows you to register a new function for the event
 //! @param[in,out] object The event object itself
 //! @param[in] function Function pointer to the function to be added
@@ -448,7 +466,7 @@ extern const struct event_lf_sc event_lf;
 //!                          used by the allocation and free callbacks.
 //!
 #define EVENT_LF_INIT(MEMORY_OBJECT_PTR) \
-{                                                                                 \
+((event_lf_t){                                                                    \
   /* .list          = */ ATOMIC_VAR_INIT(NULL),                                   \
   /* .threads       = */ ATOMIC_VAR_INIT(0),                                      \
   /* .remove_count  = */ ATOMIC_VAR_INIT(0),                                      \
@@ -456,7 +474,7 @@ extern const struct event_lf_sc event_lf;
   /* .memory_object = */ (MEMORY_OBJECT_PTR),                                     \
   /* .allocate      = */ (event_lf_item_t *(*)(void *))event_lf_memory_allocate,  \
   /* .free          = */ (void(*)(void *, event_lf_item_t *))event_lf_memory_free \
-}                                                                                // ;
+})                                                                               // ;
 
 //! @brief Initialize an event struct `event_lf_s` with a given memory object.
 //!
@@ -470,7 +488,7 @@ extern const struct event_lf_sc event_lf;
 //! @param FREE Function pointer to the free function.
 //!
 #define EVENT_LF_INIT_CUSTOM_MEMORY(MEMORY_OBJECT_PTR, ALLOCATE, FREE) \
-{                                               \
+((event_lf_t){                                  \
   /* .list          = */ ATOMIC_VAR_INIT(NULL), \
   /* .threads       = */ ATOMIC_VAR_INIT(0),    \
   /* .remove_count  = */ ATOMIC_VAR_INIT(0),    \
@@ -478,7 +496,29 @@ extern const struct event_lf_sc event_lf;
   /* .memory_object = */ (MEMORY_OBJECT_PTR),   \
   /* .allocate      = */ (ALLOCATE),            \
   /* .free          = */ (FREE)                 \
-}                                              // ;
+})                                             // ;
+
+
+#ifdef EVENT_LF_STANDARD_MALLOC_FREE
+
+//! @brief Initialize an event struct `event_lf_s` with standard malloc and free function
+//!
+//! @details This macro provides a static initializer for an event instance.
+//!          It sets up atomic members, internal pointers, and memory
+//!          management callbacks required for event handling.
+//!
+#define EVENT_LF_INIT_STANDARD_MALLOC_FREE() \
+((event_lf_t){                                     \
+  /* .list          = */ ATOMIC_VAR_INIT(NULL),    \
+  /* .threads       = */ ATOMIC_VAR_INIT(0),       \
+  /* .remove_count  = */ ATOMIC_VAR_INIT(0),       \
+  /* .remove        = */ NULL,                     \
+  /* .memory_object = */ NULL,                     \
+  /* .allocate      = */ event_lf_standard_malloc, \
+  /* .free          = */ event_lf_standard_free    \
+})                                                // ;
+
+#endif
 
 
 // ------------------------------------------------------------------------- //
