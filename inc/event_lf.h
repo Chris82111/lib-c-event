@@ -144,16 +144,16 @@ extern "C" {
 //  public: typedefs
 // ------------------------------------------------------------------------- //
 
-/// @brief Status of the individual item
-/// @details Each item has a status. This status is used to handle the item differently in specific methods.
+//! @brief Status of the individual item
+//! @details Each item has a status. This status is used to handle the item differently in specific methods.
 typedef enum event_lf_state_flag_e
 {
-  EVENT_LF_STATE_FLAG_UNKNOWN = 0x00, ///< State of the item is unknown
-  EVENT_LF_STATE_FLAG_IS_ALIVE = 0x01, ///< If the item is alive, it is not soft deleted. A new item and the last item are only alive.
-  EVENT_LF_STATE_FLAG_IS_VALID = 0x02, ///< If the item is valid, it can be processed; invoke and sub needs alive and valid
+  EVENT_LF_STATE_FLAG_UNKNOWN = 0x00, //!< State of the item is unknown
+  EVENT_LF_STATE_FLAG_IS_ALIVE = 0x01, //!< If the item is alive, it is not soft deleted. A new item and the last item are only alive.
+  EVENT_LF_STATE_FLAG_IS_VALID = 0x02, //!< If the item is valid, it can be processed; invoke and sub needs alive and valid
 } event_lf_state_flag_t;
 
-/// @brief This is the type of handler called by the entire `event_lf` module
+//! @brief This is the type of handler called by the entire `event_lf` module
 //! @param[in,out] sender Usually a pointer provided by the sender, but it can be chosen freely
 //! @param[in,out] e Usually a pointer to the event arguments, but it can be chosen freely
 typedef void (*function_pointer)(void * sender, void * e);
@@ -168,34 +168,34 @@ typedef struct event_lf_item_s event_lf_item_t;
 //! @brief A structure for managing memory blocks
 typedef struct event_lf_memory_s
 {
-  _Atomic(event_lf_item_t *) next; ///< Pointer to the next item or null
-  _Atomic(uint16_t) used; ///< Number of used items
-  _Atomic(uint16_t) capacity; ///< Maximum number of available items
+  _Atomic(event_lf_item_t *) next; //!< Pointer to the next item or null
+  _Atomic(uint16_t) used; //!< Number of used items
+  _Atomic(uint16_t) capacity; //!< Maximum number of available items
 } event_lf_memory_t;
 
 
 //! @brief A structure for managing an event item
 typedef struct event_lf_item_s
 {
-  _Atomic(event_lf_item_t *) next; ///< Pointer to the next item or null
-  function_pointer function; ///< Function pointer, must not be null
-  _Atomic(event_lf_state_flag_t) state; ///< State of the item
+  _Atomic(event_lf_item_t *) next; //!< Pointer to the next item or null
+  function_pointer function; //!< Function pointer, must not be null
+  _Atomic(event_lf_state_flag_t) state; //!< State of the item
 
-  event_lf_item_t * remove; ///< Pointer to the next removed item or null
+  event_lf_item_t * remove; //!< Pointer to the next removed item or null
 } event_lf_item_t;
 
 //! @brief A structure for managing events
 typedef struct event_lf_s
 {
-  volatile _Atomic(event_lf_item_t *) list; ///< Pointer to the first item
-  volatile _Atomic(uint16_t) threads; ///< Number of running threads
+  volatile _Atomic(event_lf_item_t *) list; //!< Pointer to the first item
+  volatile _Atomic(uint16_t) threads; //!< Number of running threads
 
-  volatile _Atomic(uint16_t) remove_count; ///< Number of items to be added to the "removed" chain
-  event_lf_item_t * remove; ///< A sequence of elements that need to be removed
+  volatile _Atomic(uint16_t) remove_count; //!< Number of items to be added to the "removed" chain
+  event_lf_item_t * remove; //!< A sequence of elements that need to be removed
 
-  void * memory_object; ///< Function pointer to manage memory, can be null
-  event_lf_item_t * (*allocate)(void * memory_object); ///< Function pointer to allocate memory, must not be null
-  void (*free)(void * memory_object, event_lf_item_t * mem); ///< Function pointer to free memory, must not be null
+  void * memory_object; //!< Function pointer to manage memory, can be null
+  event_lf_item_t * (*allocate)(void * memory_object); //!< Function pointer to allocate memory, must not be null
+  void (*free)(void * memory_object, event_lf_item_t * mem); //!< Function pointer to free memory, must not be null
 } event_lf_t;
 
 
@@ -481,7 +481,7 @@ extern const struct event_lf_sc event_lf;
 //! @details This macro provides a static initializer for an event instance.
 //!          It sets up atomic members, internal pointers, and memory
 //!          management callbacks required for event handling.
-/// 
+//!
 //! @param MEMORY_OBJECT_PTR Pointer to a user-provided memory/context object
 //!                          used by the allocation and free callbacks.
 //! @param ALLOCATE Function pointer to the allocation function.
