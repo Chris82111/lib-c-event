@@ -92,12 +92,12 @@ void EventLf_example1(void)
   auto memory = EventLfMemory(data10);
   auto e1 = EventLf(memory);
 
-  e1.Add(handler1);
-  e1.Add(handler2);
-  e1.Add(handler3);
+  e1 += handler1;
+  e1 += handler2;
+  e1 += handler3;
   e1.Invoke(NULL, NULL); // 1, 2, 3
 
-  e1.Sub(handler2);
+  e1 -= handler2;
   e1.Invoke(NULL, NULL); // 1, 3
 }
 
