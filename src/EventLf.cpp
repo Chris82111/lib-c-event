@@ -138,7 +138,7 @@ EventLf::EventLf (
   Add(NULL);
 }
 
-#ifdef EVENT_LF_STANDARD_MALLOC_FREE
+#ifdef EVENT_LF_ALLOW_STANDARD_MALLOC_FREE
 
 //! @brief Initialize the class and uses the standard malloc and free function
 EventLf::EventLf ()

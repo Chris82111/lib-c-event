@@ -420,7 +420,7 @@ void event_lf_memory_init(event_lf_memory_t * object)
 
 
 
-#ifdef EVENT_LF_STANDARD_MALLOC_FREE
+#ifdef EVENT_LF_ALLOW_STANDARD_MALLOC_FREE
 
 
 event_lf_item_t * event_lf_standard_malloc(void * object)

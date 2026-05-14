@@ -943,7 +943,7 @@ int event_lf_thread_test() {
 
 
 
-#ifdef EVENT_LF_STANDARD_MALLOC_FREE
+#ifdef EVENT_LF_ALLOW_STANDARD_MALLOC_FREE
 
 int event_lf_standard_malloc_free_test(void)
 {
@@ -1047,7 +1047,7 @@ int event_lf_test(void)
   errors += event_lf_sub_test();
   errors += event_lf_thread_test();
 
-#ifdef EVENT_LF_STANDARD_MALLOC_FREE
+#ifdef EVENT_LF_ALLOW_STANDARD_MALLOC_FREE
   errors += event_lf_standard_malloc_free_test();
 #endif
 

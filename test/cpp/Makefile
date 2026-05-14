@@ -1,8 +1,8 @@
 CC      = gcc
 CXX     = g++
 
-FLAGS  = -Wall -Wextra -g -MMD -MP -std=c11
-CXXFLAGS= -Wall -Wextra -g -MMD -MP -std=c++23
+FLAGS  = -Wall -Wextra -g -MMD -MP -std=c11 -DEVENT_LF_ALLOW_STANDARD_MALLOC_FREE
+CXXFLAGS= -Wall -Wextra -g -MMD -MP -std=c++23 -DEVENT_LF_ALLOW_STANDARD_MALLOC_FREE
  
 SRC_DIR = ./../../src
 INC_DIR = ./../../inc

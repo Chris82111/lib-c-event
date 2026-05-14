@@ -325,7 +325,7 @@ void event_lf_memory_init(event_lf_memory_t * object);
 
 
 
-#ifdef EVENT_LF_STANDARD_MALLOC_FREE
+#ifdef EVENT_LF_ALLOW_STANDARD_MALLOC_FREE
 
 //! @brief Function to allocate an item
 //! @param[in,out] object Not used
@@ -499,7 +499,7 @@ extern const struct event_lf_sc event_lf;
 })                                             // ;
 
 
-#ifdef EVENT_LF_STANDARD_MALLOC_FREE
+#ifdef EVENT_LF_ALLOW_STANDARD_MALLOC_FREE
 
 //! @brief Initialize an event struct `event_lf_s` with standard malloc and free function
 //!

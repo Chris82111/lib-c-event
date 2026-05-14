@@ -152,7 +152,7 @@ public:
            event_lf_item_t * (* allocate)(void * memory_object),
            void (* free)(void * memory_object, event_lf_item_t * mem));
 
-#ifdef EVENT_LF_STANDARD_MALLOC_FREE
+#ifdef EVENT_LF_ALLOW_STANDARD_MALLOC_FREE
 
   //! @brief Initialize the class and uses the standard malloc and free function
   EventLf ();
