@@ -222,6 +222,7 @@ struct event_lf_memory_sc
   void (* Free) (event_lf_memory_t * object, event_lf_item_t * item);
 
   //! @brief Initialize the struct `event_lf_memory_s`
+//! @details After initialization, memory must be added using `event_lf_memory_add()`
   //! @param[in,out] object The memory object itself
   void (* Init) (event_lf_memory_t * object);
 };
@@ -320,6 +321,7 @@ event_lf_item_t * event_lf_memory_allocate(event_lf_memory_t * object);
 void event_lf_memory_free(event_lf_memory_t * object, event_lf_item_t * item);
 
 //! @brief Initialize the struct `event_lf_memory_s`
+//! @details After initialization, memory must be added using `event_lf_memory_add()`
 //! @param[in,out] object The memory object itself
 void event_lf_memory_init(event_lf_memory_t * object);
 
