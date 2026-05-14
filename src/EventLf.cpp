@@ -138,6 +138,19 @@ EventLf::EventLf (
   Add(NULL);
 }
 
+#ifdef EVENT_LF_STANDARD_MALLOC_FREE
+
+//! @brief Initialize the class and uses the standard malloc and free function
+EventLf::EventLf ()
+{
+  c_object = &objectData;
+  InitCustomMemory(NULL, event_lf_standard_malloc, event_lf_standard_free);
+  Add(NULL);
+}
+
+#endif
+
+
 EventLf::~EventLf ()
 {
   Dispose();
