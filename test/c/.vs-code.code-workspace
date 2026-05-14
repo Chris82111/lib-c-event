@@ -1,0 +1,23 @@
+{
+	"folders": [
+		{
+			"name": "inc",
+			"path": "../../inc"
+		},
+		{
+			"name": "src",
+			"path": "../../src"
+		},
+		{
+			"name": "c",
+			"path": "."
+		}
+	],
+	"settings": {
+		"files.exclude": {
+			".cproject": true,
+			".project": true,
+			".settings": true
+		}
+	}
+}

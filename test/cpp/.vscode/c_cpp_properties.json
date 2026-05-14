@@ -1,0 +1,23 @@
+{
+  "version": 4,
+  "configurations": [
+    {
+      "name": "Linux",
+      "compilerPath": "/usr/bin/g++",
+      "intelliSenseMode": "linux-gcc-x64",
+      "cStandard": "c11",
+      "cppStandard": "c++23",
+      "includePath": [
+        "${workspaceFolder}/**",
+        "${workspaceFolder}/../../inc"
+      ],
+      "browse": {
+        "path": [
+          "${workspaceFolder}",
+          "${workspaceFolder}/../../inc",
+          "${workspaceFolder}/../../src"
+        ]
+      }
+    }
+  ]
+}
