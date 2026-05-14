@@ -44,6 +44,14 @@ void EventLf::Init (event_lf_memory_t * const memory_object)
   event_lf_init(c_object, memory_object);
 }
 
+void EventLf::InitCustomMemory (
+  void * const memory_object,
+  event_lf_item_t * (* allocate)(void * memory_object),
+  void (* free)(void * memory_object, event_lf_item_t * mem))
+{
+  event_lf_init_custom_memory(c_object, memory_object, allocate, free);
+}
+
 
 // ------------------------------------------------------------------------- //
 //  public:  functions
@@ -120,6 +128,16 @@ EventLf::EventLf (EventLfMemory & memory_class)
   Add(NULL);
 }
 
+EventLf::EventLf (
+  event_lf_memory_t * const memory_object,
+  event_lf_item_t * (* allocate)(void * memory_object),
+  void (* free)(void * memory_object, event_lf_item_t * mem))
+{
+  c_object = &objectData;
+  InitCustomMemory(memory_object, allocate, free);
+  Add(NULL);
+}
+
 EventLf::~EventLf ()
 {
   Dispose();
@@ -143,14 +161,6 @@ bool EventLf::Dispose ()
 void EventLf::Foreach (void * sender, void (*function)(void * sender, event_lf_item_t * item) )
 {
   event_lf_foreach(c_object, sender, function);
-}
-
-void EventLf::InitCustomMemory (
-  void * const memory_object,
-  event_lf_item_t * (* allocate)(void * memory_object),
-  void (* free)(void * memory_object, event_lf_item_t * mem))
-{
-  event_lf_init_custom_memory(c_object, memory_object, allocate, free);
 }
 
 void EventLf::Invoke (void * const sender, void * const e)
