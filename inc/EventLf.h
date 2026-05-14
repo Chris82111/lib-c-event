@@ -72,6 +72,11 @@ public:
   //! @param data Storage space to be added
   void Add (std::span<event_lf_item_t> data);
 
+  //! @brief Adds memory to the memory object
+  //! @param data Storage space to be added
+  //! @return The class itself
+  EventLfMemory& operator+= (std::span<event_lf_item_t> data);
+
   //! @brief Function to allocate an item
   //! @return A pointer to an available event item, or null if there are no more available objects
   event_lf_item_t * Allocate ();
@@ -170,6 +175,12 @@ public:
   //! @retval false The function could not be added
   bool Add (function_pointer const function);
 
+  //! @brief This function allows you to register a new function for the event
+  //! @param function Function pointer to the function to be added
+  //! @return The class itself
+  //! @throws std::runtime_error If there is not enough memory and memory allocation failed
+  EventLf& operator+= (function_pointer const function);
+
   //! @brief This function returns the number of valid handlers that have been added
   //! @return Number of valid items
   uint16_t Count ();
@@ -193,6 +204,11 @@ public:
   //! @brief This function allows you to remove a new function for the event
   //! @param[in] function Function pointer to the function to be removed
   void Sub (function_pointer const function);
+
+  //! @brief This function allows you to remove a new function for the event
+  //! @param function Function pointer to the function to be removed
+  //! @return The class itself
+  EventLf& operator-= (function_pointer const function);
 };
 
 
