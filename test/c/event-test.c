@@ -974,7 +974,6 @@ void event_lf_example1(void)
   event_lf_memory.Add(&memory, data10, countof(data10));
 
   event_lf_t e1 = EVENT_LF_INIT(&memory);
-  event_lf.Init(&e1, &memory);
   event_lf.Add(&e1, NULL);
 
   event_lf.Add(&e1, handler1);
