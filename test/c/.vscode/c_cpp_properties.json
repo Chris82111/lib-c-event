@@ -6,7 +6,6 @@
       "compilerPath": "/usr/bin/gcc",
       "intelliSenseMode": "linux-gcc-x64",
       "cStandard": "c11",
-      "cppStandard": "c++23",
       "includePath": [
         "${workspaceFolder}/**",
         "${workspaceFolder}/../../inc"
