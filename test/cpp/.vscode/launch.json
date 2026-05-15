@@ -7,7 +7,7 @@
       "request": "launch",
       "program": "${workspaceFolder}/bin/cpp",
       "args": [],
-      "stopAtEntry": false,
+      "stopAtEntry": true,
       "cwd": "${workspaceFolder}",
       "environment": [],
       "externalConsole": false,
